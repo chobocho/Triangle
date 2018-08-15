@@ -1,5 +1,5 @@
 # Triangle
-![screen shot](https://github.com/chobocho/Triangle/blob/master/ux/screenshot.jpg)
+![screen shot](https://github.com/chobocho/Triangle/blob/master/ux/Screenshot.jpg)
 
 ## An app that calculates the diagonal length of a right triangle
 
