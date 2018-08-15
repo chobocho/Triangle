@@ -44,6 +44,7 @@ class MainActivity : AppCompatActivity() {
 
                if (TextUtils.isEmpty(triA) || TextUtils.isEmpty(triB) ) {
                    Toast.makeText(this, "Please input A and B!", Toast.LENGTH_SHORT).show()
+                   return@setOnClickListener
                }
                Log.d(LOG_TAG, "Tri A: " + triA + " Tri B: " + triB)
 

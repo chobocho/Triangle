@@ -10,8 +10,8 @@ android {
         applicationId "com.chobocho.triangle"
         minSdkVersion 23
         targetSdkVersion 27
-        versionCode 1
-        versionName "0.627.2018.08.15a"
+        versionCode 2
+        versionName "0.627.2018.08.15b"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
