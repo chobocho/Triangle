@@ -16,8 +16,9 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_gravity="center"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
             app:srcCompat="@drawable/triangle" />
 
         <LinearLayout
@@ -33,9 +34,9 @@
                 <EditText
                     android:id="@+id/triCornerA"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/bluebutton"
-                    android:hint="A"
+                    android:hint="세로(A)"
                     android:inputType="numberDecimal"
                     android:maxLength="@integer/TriMaxLength"
                     android:paddingLeft="30dp" />
@@ -43,9 +44,9 @@
                 <EditText
                     android:id="@+id/triCornerB"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/redbutton"
-                    android:hint="B"
+                    android:hint="가로(B)"
                     android:inputType="numberDecimal"
                     android:maxLength="@integer/TriMaxLength"
                     android:paddingLeft="30dp" />
@@ -53,37 +54,34 @@
                 <TextView
                     android:id="@+id/triCornerC"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="50dp"
                     android:background="@drawable/greenbutton"
                     android:textSize="30dp"
-                    android:text="C"
+                    android:text="대각선(C)"
                     android:gravity="bottom"
                     android:maxLength="@integer/TriMaxLength"
                     android:paddingBottom="10dp"
                     android:paddingLeft="30dp"/>
-
-
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="218dp"
+                android:layout_height="150dp"
                 android:orientation="vertical">
 
                 <Button
                     android:id="@+id/answer"
                     android:layout_width="match_parent"
-                    android:layout_height="152dp"
+                    android:layout_height="75dp"
                     android:layout_weight="1"
-                    android:text=""
-                    android:background="@drawable/result" />
+                    android:text="@string/calc" />
 
                 <Button
                     android:id="@+id/clear"
                     android:layout_width="match_parent"
-                    android:layout_height="76dp"
+                    android:layout_height="75dp"
                     android:layout_weight="1"
-                    android:text="Clear" />
+                    android:text="지우기" />
             </LinearLayout>
 
 

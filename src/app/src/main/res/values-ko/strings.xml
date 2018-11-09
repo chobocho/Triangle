@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">대각선 길이\n구하기</string>
+    <string name="calc">계산하기</string>
+    <string name="clear">지우기</string>
+    <string name="input_a_and_b">가로와 세로를 입력하세요!</string>
+</resources>

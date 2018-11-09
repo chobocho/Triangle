@@ -43,7 +43,7 @@ class MainActivity : AppCompatActivity() {
                val triB = cornerB.getText()
 
                if (TextUtils.isEmpty(triA) || TextUtils.isEmpty(triB) ) {
-                   Toast.makeText(this, "Please input A and B!", Toast.LENGTH_SHORT).show()
+                   Toast.makeText(this, R.string.input_a_and_b, Toast.LENGTH_SHORT).show()
                    return@setOnClickListener
                }
                Log.d(LOG_TAG, "Tri A: " + triA + " Tri B: " + triB)
