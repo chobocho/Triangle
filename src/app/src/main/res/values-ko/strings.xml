@@ -4,4 +4,13 @@
     <string name="calc">계산하기</string>
     <string name="clear">지우기</string>
     <string name="input_a_and_b">가로와 세로를 입력하세요!</string>
+    <string name="input_correct_a_and_b">0보다 큰 값을 입력하세요!</string>
+    <string name="height">세로(A)</string>
+    <string name="width">가로(B)</string>
+    <string name="angle_a">각(A)</string>
+    <string name="angle_b">각(B)</string>
+    <string name="angle_c">각(C)</string>
+    <string name="round_area">둘레=?\n넓이=?</string>
+    <string name="round">둘레= </string>
+    <string name="area">넓이= </string>
 </resources>
