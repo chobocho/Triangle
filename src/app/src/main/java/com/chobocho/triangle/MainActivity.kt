@@ -1,11 +1,13 @@
 package com.chobocho.triangle
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -33,6 +35,8 @@ class MainActivity : AppCompatActivity() {
         val btnClear = findViewById<Button>(R.id.clear)
         val stringUtil = StringUtil()
 
+        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+
         btnClear.setOnClickListener() {
             cornerA.setText("")
             cornerB.setText("")
@@ -47,6 +51,9 @@ class MainActivity : AppCompatActivity() {
         btnAnswer.setOnClickListener {
             val triA = cornerA.getText()
             val triB = cornerB.getText()
+
+            imm.hideSoftInputFromWindow(cornerA.getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(cornerB.getWindowToken(), 0);
 
             if (TextUtils.isEmpty(triA) || TextUtils.isEmpty(triB) ) {
                 Toast.makeText(this, R.string.input_a_and_b, Toast.LENGTH_SHORT).show()
