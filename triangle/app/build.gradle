@@ -1,0 +1,93 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace 'com.chobocho.triangle'
+    compileSdk 34
+    buildToolsVersion '34.0.0'
+
+    def versionPropsFile = file('versioninfo.properties')
+    def Properties versionInfo = new Properties()
+
+    if (versionPropsFile.canRead()) {
+        versionInfo.load(new FileInputStream(versionPropsFile))
+    } else {
+        versionInfo['VERSION_HEADER'] = "0.1216"
+        versionInfo['VERSION_CODE'] = 1
+        versionInfo['MONTHLY_RELEASE_COUNT'] = 0
+        versionInfo['BUILD_COUNT'] = 0
+    }
+
+    def versionHeader = versionInfo['VERSION_HEADER']
+    def releaseVersionCode = versionInfo['VERSION_CODE'].toInteger()
+    def monthVersionCount = versionInfo['MONTHLY_RELEASE_COUNT'].toInteger()
+    def buildCount = versionInfo['BUILD_COUNT'].toInteger()
+
+    def taskName = gradle.startParameter.taskNames
+    def addVersion = 1
+    def isReleaseVersion = false
+
+    if (":app:bundleRelease" in taskName) {
+        println '---[bundleRelease]---'
+        releaseVersionCode += addVersion
+        monthVersionCount += addVersion
+        isReleaseVersion = true
+    }
+
+    buildCount += addVersion
+
+    versionInfo['VERSION_HEADER'] = versionHeader.toString()
+    versionInfo['VERSION_CODE'] = releaseVersionCode.toString()
+    versionInfo['MONTHLY_RELEASE_COUNT'] = monthVersionCount.toString()
+    versionInfo['BUILD_COUNT'] = isReleaseVersion ? "1" : buildCount.toString()
+
+    versionInfo.store(versionPropsFile.newWriter(), null)
+
+    def date = new Date();
+    def alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    def thisYear =  alphabet.charAt(date.getYear() + 1900 - 2001)
+    def thisMonth = alphabet.charAt(date.getMonth())
+    def monthVersion = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(monthVersionCount)
+
+    println '-------------------'
+    println taskName
+    println "${versionHeader}.${thisYear}${thisMonth}${monthVersion}.${buildCount}"
+    println '-------------------'
+
+    defaultConfig {
+        applicationId "com.chobocho.triangle"
+        minSdk 29
+        targetSdk 34
+        versionCode releaseVersionCode
+        versionName "${versionHeader}.${thisYear}${thisMonth}${monthVersion}.${buildCount}"
+        setProperty("archivesBaseName", "triangle_$versionName")
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.core:core-ktx:1.9.0'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+}
