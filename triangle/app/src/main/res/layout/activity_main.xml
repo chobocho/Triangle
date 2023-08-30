@@ -45,7 +45,7 @@
                     android:layout_width="100dp"
                     android:layout_height="120dp"
                     android:layout_weight="1"
-                    android:text="지우기" />
+                    android:text="@string/clear" />
             </LinearLayout>
 
         </LinearLayout>
@@ -67,11 +67,12 @@
                     android:id="@+id/triCornerA"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:textSize="30dp"
                     android:background="@drawable/bluebutton"
                     android:hint="@string/height"
                     android:inputType="numberDecimal"
-                    android:paddingLeft="30dp" />
+                    android:maxLength="9"
+                    android:paddingLeft="30dp"
+                    android:textSize="30dp" />
 
                 <EditText
                     android:id="@+id/triCornerB"
@@ -81,6 +82,7 @@
                     android:background="@drawable/redbutton"
                     android:hint="@string/width"
                     android:inputType="numberDecimal"
+                    android:maxLength="9"
                     android:paddingLeft="30dp" />
 
                 <TextView
