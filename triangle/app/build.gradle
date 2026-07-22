@@ -1,69 +1,88 @@
+import java.util.Calendar
+import java.util.Properties
+
 plugins {
-    id 'com.android.application'
-    id 'org.jetbrains.kotlin.android'
+    // AGP 9 ships built-in Kotlin support, so the standalone Kotlin Android
+    // plugin must not be applied on top of it.
+    alias(libs.plugins.android.application)
 }
 
+def versionPropsFile = file('versioninfo.properties')
+Properties versionInfo = new Properties()
+
+if (versionPropsFile.canRead()) {
+    versionPropsFile.withInputStream { versionInfo.load(it) }
+} else {
+    versionInfo['VERSION_HEADER'] = "0.1216"
+    versionInfo['VERSION_CODE'] = "0"
+    versionInfo['MONTHLY_RELEASE_COUNT'] = "0"
+    versionInfo['BUILD_COUNT'] = "0"
+}
+
+def versionHeader = versionInfo['VERSION_HEADER']
+def releaseVersionCode = versionInfo['VERSION_CODE'].toInteger()
+def monthVersionCount = versionInfo['MONTHLY_RELEASE_COUNT'].toInteger()
+def buildCount = versionInfo['BUILD_COUNT'].toInteger()
+
+def alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+Calendar calendar = Calendar.getInstance()
+def thisYear = alphabet.charAt(calendar.get(Calendar.YEAR) - 2001) as String
+def thisMonth = alphabet.charAt(calendar.get(Calendar.MONTH)) as String
+
+// Reset the monthly counter when the month rolls over.
+// A missing MONTH key means the file predates this field, so adopt the current
+// month without discarding the counter that is already recorded.
+def storedMonth = versionInfo['MONTH']
+if (storedMonth != null && storedMonth != thisMonth) {
+    monthVersionCount = 0
+}
+
+def taskName = gradle.startParameter.taskNames
+def addVersion = 1
+def isReleaseVersion = false
+
+if (":app:bundleRelease" in taskName) {
+    println '---[bundleRelease]---'
+    releaseVersionCode += addVersion
+    monthVersionCount += addVersion
+    isReleaseVersion = true
+}
+
+buildCount += addVersion
+
+versionInfo['VERSION_HEADER'] = versionHeader.toString()
+versionInfo['VERSION_CODE'] = releaseVersionCode.toString()
+versionInfo['MONTH'] = thisMonth
+versionInfo['MONTHLY_RELEASE_COUNT'] = monthVersionCount.toString()
+versionInfo['BUILD_COUNT'] = isReleaseVersion ? "1" : buildCount.toString()
+
+versionPropsFile.withWriter { versionInfo.store(it, null) }
+
+def monthVersion = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(monthVersionCount)
+def appVersionName = "${versionHeader}.${thisYear}${thisMonth}${monthVersion}.${buildCount}"
+
+println '-------------------'
+println taskName
+println appVersionName
+println '-------------------'
+
 android {
-    namespace 'com.chobocho.triangle'
-    compileSdk 36
-    buildToolsVersion '36.0.0'
-
-    def versionPropsFile = file('versioninfo.properties')
-    def Properties versionInfo = new Properties()
-
-    if (versionPropsFile.canRead()) {
-        versionInfo.load(new FileInputStream(versionPropsFile))
-    } else {
-        versionInfo['VERSION_HEADER'] = "0.1216"
-        versionInfo['VERSION_CODE'] = 1
-        versionInfo['MONTHLY_RELEASE_COUNT'] = 0
-        versionInfo['BUILD_COUNT'] = 0
+    namespace = 'com.chobocho.triangle'
+    compileSdk {
+        version = release(37) {
+            it.minorApiLevel = 1
+        }
     }
-
-    def versionHeader = versionInfo['VERSION_HEADER']
-    def releaseVersionCode = versionInfo['VERSION_CODE'].toInteger()
-    def monthVersionCount = versionInfo['MONTHLY_RELEASE_COUNT'].toInteger()
-    def buildCount = versionInfo['BUILD_COUNT'].toInteger()
-
-    def taskName = gradle.startParameter.taskNames
-    def addVersion = 1
-    def isReleaseVersion = false
-
-    if (":app:bundleRelease" in taskName) {
-        println '---[bundleRelease]---'
-        releaseVersionCode += addVersion
-        monthVersionCount += addVersion
-        isReleaseVersion = true
-    }
-
-    buildCount += addVersion
-
-    versionInfo['VERSION_HEADER'] = versionHeader.toString()
-    versionInfo['VERSION_CODE'] = releaseVersionCode.toString()
-    versionInfo['MONTHLY_RELEASE_COUNT'] = monthVersionCount.toString()
-    versionInfo['BUILD_COUNT'] = isReleaseVersion ? "1" : buildCount.toString()
-
-    versionInfo.store(versionPropsFile.newWriter(), null)
-
-    def date = new Date()
-    def alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-    def thisYear =  alphabet.charAt(date.getYear() + 1900 - 2001)
-    def thisMonth = alphabet.charAt(date.getMonth())
-    def monthVersion = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ".charAt(monthVersionCount)
-
-    println '-------------------'
-    println taskName
-    println "${versionHeader}.${thisYear}${thisMonth}${monthVersion}.${buildCount}"
-    println '-------------------'
 
     defaultConfig {
-        applicationId "com.chobocho.triangle"
-        minSdk 29
-        targetSdk 35
-        versionCode releaseVersionCode
-        versionName "${versionHeader}.${thisYear}${thisMonth}${monthVersion}.${buildCount}"
-        setProperty("archivesBaseName", "triangle_$versionName")
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        applicationId = "com.chobocho.triangle"
+        minSdk = 26
+        targetSdk {
+            version = release(37)
+        }
+        versionCode = releaseVersionCode
+        versionName = appVersionName
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -72,22 +91,32 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = '11'
+}
+
+kotlin {
+    compilerOptions {
+        jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+base {
+    archivesName = "triangle_$appVersionName"
 }
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+    implementation libs.androidx.core.ktx
+    implementation libs.androidx.appcompat
+    implementation libs.material
+    implementation libs.androidx.activity
+    implementation libs.androidx.constraintlayout
+
+    testImplementation libs.junit
+    androidTestImplementation libs.androidx.junit
+    androidTestImplementation libs.androidx.espresso.core
 }
